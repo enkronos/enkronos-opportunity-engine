@@ -1,197 +1,129 @@
 #!/usr/bin/env node
 
-/**
- * doctor.mjs — Setup validation for career-ops
- * Checks all prerequisites and prints a pass/fail checklist.
- */
+import { existsSync, mkdirSync } from 'fs';
 
-import { existsSync, mkdirSync, readdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { ensurePipelineStore, DEFAULT_PIPELINE_PATH } from './pipeline/index.mjs';
+import { hasLanguageModelConfig } from './shared/openai.mjs';
+import { DEFAULT_STRATEGY_PATH, loadStrategy, validateStrategy } from './strategy/index.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const projectRoot = __dirname;
+const green = (value) => (process.stdout.isTTY ? `\x1b[32m${value}\x1b[0m` : value);
+const yellow = (value) => (process.stdout.isTTY ? `\x1b[33m${value}\x1b[0m` : value);
+const red = (value) => (process.stdout.isTTY ? `\x1b[31m${value}\x1b[0m` : value);
 
-// ANSI colors (only on TTY)
-const isTTY = process.stdout.isTTY;
-const green = (s) => isTTY ? `\x1b[32m${s}\x1b[0m` : s;
-const red = (s) => isTTY ? `\x1b[31m${s}\x1b[0m` : s;
-const dim = (s) => isTTY ? `\x1b[2m${s}\x1b[0m` : s;
+function pass(label) {
+  console.log(`${green('✓')} ${label}`);
+}
+
+function warn(label) {
+  console.log(`${yellow('!')} ${label}`);
+}
+
+function fail(label) {
+  console.log(`${red('✗')} ${label}`);
+}
 
 function checkNodeVersion() {
-  const major = parseInt(process.versions.node.split('.')[0]);
+  const major = Number(process.versions.node.split('.')[0]);
   if (major >= 18) {
-    return { pass: true, label: `Node.js >= 18 (v${process.versions.node})` };
+    pass(`Node.js >= 18 detected (${process.versions.node})`);
+    return true;
   }
-  return {
-    pass: false,
-    label: `Node.js >= 18 (found v${process.versions.node})`,
-    fix: 'Install Node.js 18 or later from https://nodejs.org',
-  };
+
+  fail(`Node.js >= 18 required (found ${process.versions.node})`);
+  return false;
 }
 
-function checkDependencies() {
-  if (existsSync(join(projectRoot, 'node_modules'))) {
-    return { pass: true, label: 'Dependencies installed' };
+function checkStrategy() {
+  if (!existsSync(DEFAULT_STRATEGY_PATH)) {
+    fail('strategy.yaml is missing');
+    return false;
   }
-  return {
-    pass: false,
-    label: 'Dependencies not installed',
-    fix: 'Run: npm install',
-  };
-}
 
-async function checkPlaywright() {
   try {
-    const { chromium } = await import('playwright');
-    const execPath = chromium.executablePath();
-    if (existsSync(execPath)) {
-      return { pass: true, label: 'Playwright chromium installed' };
+    const strategy = loadStrategy(DEFAULT_STRATEGY_PATH);
+    const issues = validateStrategy(strategy);
+    if (issues.length) {
+      fail(`strategy.yaml is invalid: ${issues.join('; ')}`);
+      return false;
     }
-    return {
-      pass: false,
-      label: 'Playwright chromium not installed',
-      fix: 'Run: npx playwright install chromium',
-    };
-  } catch {
-    return {
-      pass: false,
-      label: 'Playwright chromium not installed',
-      fix: 'Run: npx playwright install chromium',
-    };
+
+    pass('strategy.yaml loaded and validated');
+    return true;
+  } catch (error) {
+    fail(`strategy.yaml could not be parsed: ${error.message}`);
+    return false;
   }
 }
 
-function checkCv() {
-  if (existsSync(join(projectRoot, 'cv.md'))) {
-    return { pass: true, label: 'cv.md found' };
+function checkDirectory(path) {
+  if (!existsSync(path)) {
+    mkdirSync(path, { recursive: true });
+    pass(`${path}/ ready (created)`);
+    return true;
   }
-  return {
-    pass: false,
-    label: 'cv.md not found',
-    fix: [
-      'Create cv.md in the project root with your CV in markdown',
-      'See examples/ for reference CVs',
-    ],
-  };
+
+  pass(`${path}/ ready`);
+  return true;
 }
 
-function checkProfile() {
-  if (existsSync(join(projectRoot, 'config', 'profile.yml'))) {
-    return { pass: true, label: 'config/profile.yml found' };
-  }
-  return {
-    pass: false,
-    label: 'config/profile.yml not found',
-    fix: [
-      'Run: cp config/profile.example.yml config/profile.yml',
-      'Then edit it with your details',
-    ],
-  };
-}
-
-function checkPortals() {
-  if (existsSync(join(projectRoot, 'portals.yml'))) {
-    return { pass: true, label: 'portals.yml found' };
-  }
-  return {
-    pass: false,
-    label: 'portals.yml not found',
-    fix: [
-      'Run: cp templates/portals.example.yml portals.yml',
-      'Then customize with your target companies',
-    ],
-  };
-}
-
-function checkFonts() {
-  const fontsDir = join(projectRoot, 'fonts');
-  if (!existsSync(fontsDir)) {
-    return {
-      pass: false,
-      label: 'fonts/ directory not found',
-      fix: 'The fonts/ directory is required for PDF generation',
-    };
-  }
+function checkPipeline() {
   try {
-    const files = readdirSync(fontsDir);
-    if (files.length === 0) {
-      return {
-        pass: false,
-        label: 'fonts/ directory is empty',
-        fix: 'The fonts/ directory must contain font files for PDF generation',
-      };
-    }
-  } catch {
-    return {
-      pass: false,
-      label: 'fonts/ directory not readable',
-      fix: 'Check permissions on the fonts/ directory',
-    };
-  }
-  return { pass: true, label: 'Fonts directory ready' };
-}
-
-function checkAutoDir(name) {
-  const dirPath = join(projectRoot, name);
-  if (existsSync(dirPath)) {
-    return { pass: true, label: `${name}/ directory ready` };
-  }
-  try {
-    mkdirSync(dirPath, { recursive: true });
-    return { pass: true, label: `${name}/ directory ready (auto-created)` };
-  } catch {
-    return {
-      pass: false,
-      label: `${name}/ directory could not be created`,
-      fix: `Run: mkdir ${name}`,
-    };
+    ensurePipelineStore(DEFAULT_PIPELINE_PATH);
+    pass('pipeline/opportunities.json ready');
+    return true;
+  } catch (error) {
+    fail(`pipeline store unavailable: ${error.message}`);
+    return false;
   }
 }
 
-async function main() {
-  console.log('\ncareer-ops doctor');
-  console.log('================\n');
-
-  const checks = [
-    checkNodeVersion(),
-    checkDependencies(),
-    await checkPlaywright(),
-    checkCv(),
-    checkProfile(),
-    checkPortals(),
-    checkFonts(),
-    checkAutoDir('data'),
-    checkAutoDir('output'),
-    checkAutoDir('reports'),
-  ];
-
-  let failures = 0;
-
-  for (const result of checks) {
-    if (result.pass) {
-      console.log(`${green('✓')} ${result.label}`);
-    } else {
-      failures++;
-      console.log(`${red('✗')} ${result.label}`);
-      const fixes = Array.isArray(result.fix) ? result.fix : [result.fix];
-      for (const hint of fixes) {
-        console.log(`  ${dim('→ ' + hint)}`);
-      }
-    }
+function checkAiConfig() {
+  if (hasLanguageModelConfig()) {
+    pass('OPENAI_API_KEY detected for reasoning and generation');
+    return true;
   }
 
-  console.log('');
-  if (failures > 0) {
-    console.log(`Result: ${failures} issue${failures === 1 ? '' : 's'} found. Fix them and run \`npm run doctor\` again.`);
-    process.exit(1);
-  } else {
-    console.log('Result: All checks passed. You\'re ready to go! Run `claude` to start.');
-    process.exit(0);
-  }
+  warn('OPENAI_API_KEY not set; the engine will use heuristic scoring and template-based copy');
+  return true;
 }
 
-main().catch((err) => {
-  console.error('doctor.mjs failed:', err.message);
+function checkExecutionConfig() {
+  const hasGenericSmtp = Boolean(process.env.SMTP_HOST);
+  const hasGmailFallback = Boolean(process.env.EMAIL_USER && process.env.EMAIL_PASS);
+
+  if (hasGenericSmtp || hasGmailFallback) {
+    pass('Email delivery credentials detected for execution layer');
+    return true;
+  }
+
+  warn('SMTP credentials not set; outreach will be drafted but not sent automatically');
+  return true;
+}
+
+console.log('\nOpportunity Engine doctor\n');
+
+const checks = [
+  checkNodeVersion(),
+  checkStrategy(),
+  checkDirectory('strategy'),
+  checkDirectory('opportunity'),
+  checkDirectory('scoring'),
+  checkDirectory('positioning'),
+  checkDirectory('outreach'),
+  checkDirectory('execution'),
+  checkDirectory('pipeline'),
+  checkDirectory('output'),
+  checkPipeline(),
+  checkAiConfig(),
+  checkExecutionConfig(),
+];
+
+const failed = checks.filter((result) => result === false).length;
+console.log('');
+
+if (failed > 0) {
+  console.log(`Result: ${failed} blocking issue${failed === 1 ? '' : 's'} found.`);
   process.exit(1);
-});
+}
+
+console.log('Result: Opportunity Engine is ready.');

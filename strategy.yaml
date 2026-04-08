@@ -1,0 +1,49 @@
+profile:
+  role: Founder / AI Systems Architect
+  positioning: Build leverage through strategy, systems, and high-trust execution
+  strengths:
+    - AI operating systems
+    - strategic partnerships
+    - agentic workflow design
+    - founder-level narrative design
+  unfair_advantages:
+    - cross-functional AI systems depth
+    - product plus GTM synthesis
+    - high-context executive communication
+
+goals:
+  - advisory roles with asymmetric upside
+  - distribution partnerships
+  - investor and operator network access
+  - pilot customers for strategic AI systems
+
+constraints:
+  - avoid low-leverage execution-heavy work
+  - avoid generic high-volume application loops
+  - avoid roles with high time cost and low strategic access
+
+target_companies:
+  - AI infrastructure startups
+  - venture firms with AI portfolios
+  - agentic platforms
+  - enterprise AI orchestration companies
+
+priority_opportunities:
+  - advisory
+  - partnership
+  - investor
+  - pilot_customer
+  - strategic role
+
+scoring:
+  pursue_threshold: 75
+  explore_threshold: 55
+  weights:
+    leverage: 0.22
+    capital_access: 0.15
+    network_value: 0.12
+    strategic_alignment: 0.18
+    distribution_power: 0.13
+    optionality: 0.10
+    time_cost: -0.05
+    execution_burden: -0.05

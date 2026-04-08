@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * update-system.mjs — Safe auto-updater for career-ops
+ * update-system.mjs — Safe auto-updater for Opportunity Engine
  *
- * Updates ONLY system layer files (modes, scripts, dashboard, templates).
- * NEVER touches user data (cv.md, profile.yml, _profile.md, data/, reports/).
+ * Updates ONLY system layer files.
+ * NEVER touches user strategy or pipeline data.
  *
  * Usage:
  *   node update-system.mjs check      # Check if update available
@@ -23,46 +23,34 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
 
-const CANONICAL_REPO = 'https://github.com/santifer/career-ops.git';
-const RAW_VERSION_URL = 'https://raw.githubusercontent.com/santifer/career-ops/main/VERSION';
-const RELEASES_API = 'https://api.github.com/repos/santifer/career-ops/releases/latest';
+const CANONICAL_REPO = 'https://github.com/enkronos/enkronos-opportunity-engine.git';
+const RAW_VERSION_URL = 'https://raw.githubusercontent.com/enkronos/enkronos-opportunity-engine/main/VERSION';
+const RELEASES_API = 'https://api.github.com/repos/enkronos/enkronos-opportunity-engine/releases/latest';
 
 // System layer paths — ONLY these files get updated
 const SYSTEM_PATHS = [
-  'modes/_shared.md',
-  'modes/_profile.template.md',
-  'modes/oferta.md',
-  'modes/pdf.md',
-  'modes/scan.md',
-  'modes/batch.md',
-  'modes/apply.md',
-  'modes/auto-pipeline.md',
-  'modes/contacto.md',
-  'modes/deep.md',
-  'modes/ofertas.md',
-  'modes/pipeline.md',
-  'modes/project.md',
-  'modes/tracker.md',
-  'modes/training.md',
-  'modes/de/',
+  'strategy/',
+  'opportunity/',
+  'scoring/',
+  'positioning/',
+  'outreach/',
+  'pipeline/',
+  'engine/',
+  'shared/',
   'CLAUDE.md',
-  'generate-pdf.mjs',
-  'merge-tracker.mjs',
+  'opportunity-engine.mjs',
+  'doctor.mjs',
   'verify-pipeline.mjs',
+  'test-all.mjs',
+  'merge-tracker.mjs',
   'dedup-tracker.mjs',
   'normalize-statuses.mjs',
-  'cv-sync-check.mjs',
   'update-system.mjs',
-  'batch/batch-prompt.md',
-  'batch/batch-runner.sh',
+  'examples/',
   'dashboard/',
-  'templates/',
-  'fonts/',
-  '.claude/skills/',
-  'docs/',
   'VERSION',
-  'DATA_CONTRACT.md',
-  'CONTRIBUTING.md',
+  'ARCHITECTURE.md',
+  'ROADMAP.md',
   'README.md',
   'LICENSE',
   'CITATION.cff',
@@ -72,16 +60,10 @@ const SYSTEM_PATHS = [
 
 // User layer paths — NEVER touch these (safety check)
 const USER_PATHS = [
-  'cv.md',
-  'config/profile.yml',
-  'modes/_profile.md',
-  'portals.yml',
-  'article-digest.md',
-  'interview-prep/story-bank.md',
   'data/',
+  'pipeline/opportunities.json',
   'reports/',
   'output/',
-  'jds/',
 ];
 
 function localVersion() {
@@ -278,7 +260,7 @@ function rollback() {
     git(`commit -m "chore: rollback system files from ${latest}"`);
 
     console.log(`Rollback complete. System files restored from ${latest}.`);
-    console.log('Your data (CV, profile, tracker, reports) was not affected.');
+    console.log('Your strategy, pipeline records, and generated outputs were not affected.');
   } catch (err) {
     console.error('Rollback failed:', err.message);
     process.exit(1);
