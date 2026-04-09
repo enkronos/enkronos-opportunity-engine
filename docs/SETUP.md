@@ -11,8 +11,8 @@
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/santifer/career-ops.git
-cd career-ops
+git clone https://github.com/enkronos/enkronos-opportunity-engine.git
+cd enkronos-opportunity-engine
 npm install
 npx playwright install chromium   # Required for PDF generation
 ```
