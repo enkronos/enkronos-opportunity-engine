@@ -1,9 +1,11 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_PIPELINE_PATH = join(__dirname, 'opportunities.json');
+export const DEFAULT_PIPELINE_PATH = process.env.OPPORTUNITY_ENGINE_PIPELINE_PATH
+  ? resolve(process.env.OPPORTUNITY_ENGINE_PIPELINE_PATH)
+  : join(__dirname, 'opportunities.json');
 
 export const PIPELINE_STAGES = [
   'discovered',

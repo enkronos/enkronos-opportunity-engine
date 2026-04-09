@@ -1,9 +1,11 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_MEMORY_PATH = join(__dirname, 'memory.json');
+export const DEFAULT_MEMORY_PATH = process.env.OPPORTUNITY_ENGINE_MEMORY_PATH
+  ? resolve(process.env.OPPORTUNITY_ENGINE_MEMORY_PATH)
+  : join(__dirname, 'memory.json');
 export const outcomeWeights = {
   replied: 1,
   meeting: 3,
