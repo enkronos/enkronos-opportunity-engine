@@ -57,7 +57,7 @@ The engine returns a weighted final score plus a decision:
 3. Try the end-to-end demo with `npm run demo`.
 4. Run real opportunity files with `npm run engine -- ./path/to/opportunities.json`.
 
-Sample opportunity input lives in [examples/opportunities.sample.json](/Users/gianluca/Documents/GitHub/opportunity-engine/examples/opportunities.sample.json).
+Sample opportunity input lives in [examples/opportunities.sample.json](examples/opportunities.sample.json).
 
 ## AI Integration
 
@@ -75,6 +75,6 @@ Without an API key, the system falls back to deterministic heuristics and templa
 Running the engine produces:
 
 - a JSON report in `output/`
-- updated pipeline records in [pipeline/opportunities.json](/Users/gianluca/Documents/GitHub/opportunity-engine/pipeline/opportunities.json)
+- updated pipeline records in [pipeline/opportunities.json](pipeline/opportunities.json)
 
 That gives the repo a clear strategic operating loop without overbuilding an application framework around it.
