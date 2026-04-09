@@ -1,0 +1,32 @@
+[
+  {
+    "company": "Northstar Ventures",
+    "title": "AI Infrastructure Advisor",
+    "source": "warm-intro",
+    "summary": "Advisory role for a VC-backed AI infrastructure portfolio.",
+    "description": "Work with founders across the portfolio, shape GTM and operating systems, and open investor and enterprise relationships.",
+    "tags": ["advisor", "portfolio", "enterprise", "vc"],
+    "signals": ["high trust", "fractional", "ecosystem leverage"],
+    "geography": "Remote"
+  },
+  {
+    "company": "OrbitStack",
+    "title": "Strategic Partnership Lead",
+    "source": "network",
+    "summary": "Build alliances with agentic platform partners and top implementation firms.",
+    "description": "Own ecosystem partnerships, co-sell motions, and thought leadership programs to accelerate distribution.",
+    "tags": ["partnership", "ecosystem", "distribution", "co-sell"],
+    "signals": ["channel leverage", "audience access"],
+    "geography": "Hybrid"
+  },
+  {
+    "company": "LegacyCorp",
+    "title": "Senior Program Manager",
+    "source": "job-board",
+    "summary": "Full-time onsite execution role with large transformation scope.",
+    "description": "Manage a cross-functional AI transformation program with procurement, compliance, weekly travel, and immediate start expectations.",
+    "tags": ["job", "onsite", "compliance", "procurement"],
+    "signals": ["high time cost", "execution heavy"],
+    "geography": "Onsite"
+  }
+]

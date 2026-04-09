@@ -1,29 +1,34 @@
 {
-  "name": "career-ops",
-  "version": "1.0.0",
-  "description": "AI-powered job search pipeline built on Claude Code",
+  "name": "opportunity-engine",
+  "version": "2.0.0",
+  "description": "Strategic AI system for discovering, scoring, positioning, and executing high-value opportunities",
   "scripts": {
     "doctor": "node doctor.mjs",
     "verify": "node verify-pipeline.mjs",
-    "normalize": "node normalize-statuses.mjs",
-    "dedup": "node dedup-tracker.mjs",
-    "merge": "node merge-tracker.mjs",
-    "pdf": "node generate-pdf.mjs",
-    "sync-check": "node cv-sync-check.mjs",
+    "engine": "node opportunity-engine.mjs run",
+    "demo": "node opportunity-engine.mjs demo",
+    "test": "node test-all.mjs",
     "update:check": "node update-system.mjs check",
     "update": "node update-system.mjs apply",
-    "rollback": "node update-system.mjs rollback",
-    "liveness": "node check-liveness.mjs"
+    "rollback": "node update-system.mjs rollback"
   },
-  "keywords": ["ai", "job-search", "claude-code", "career", "automation"],
-  "author": "Santiago Fernández de Valderrama <hi@santifer.io> (https://santifer.io)",
-  "homepage": "https://santifer.io",
+  "keywords": [
+    "ai",
+    "opportunity",
+    "strategy",
+    "outreach",
+    "pipeline"
+  ],
+  "author": "Enkronos",
+  "homepage": "https://github.com/enkronos/enkronos-opportunity-engine",
   "repository": {
     "type": "git",
-    "url": "https://github.com/santifer/career-ops"
+    "url": "https://github.com/enkronos/enkronos-opportunity-engine"
   },
   "license": "MIT",
   "dependencies": {
-    "playwright": "^1.58.1"
+    "nodemailer": "^8.0.5",
+    "openai": "^6.33.0",
+    "playwright": "^1.59.1"
   }
 }
