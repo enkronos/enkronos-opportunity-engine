@@ -1,6 +1,6 @@
-# Contributing to Career-Ops
+# Contributing to Opportunity Engine
 
-Thanks for your interest in contributing! Career-Ops is built with Claude Code, and you can use it for development too.
+Thanks for your interest in contributing. Opportunity Engine is a public repo under the `enkronos` GitHub org, and contributions are welcome when they align with the project direction.
 
 ## Before Submitting a PR
 
@@ -27,11 +27,11 @@ PRs without a corresponding issue may be closed if they don't align with the pro
 ## What to Contribute
 
 **Good first contributions:**
-- Add companies to `templates/portals.example.yml`
-- Translate modes to other languages
+- Add or refine examples in `examples/`
 - Improve documentation
-- Add example CVs for different roles (in `examples/`)
-- Report bugs via [Issues](https://github.com/santifer/career-ops/issues)
+- Tighten validation, diagnostics, or test coverage
+- Improve pipeline/readiness ergonomics
+- Report bugs via [Issues](https://github.com/enkronos/enkronos-opportunity-engine/issues)
 
 **Bigger contributions:**
 - New evaluation dimensions or scoring logic
@@ -49,7 +49,7 @@ PRs without a corresponding issue may be closed if they don't align with the pro
 ## What we do NOT accept
 
 - **PRs that scrape platforms prohibiting automated access** (LinkedIn, etc.). We actively reject these to respect third-party ToS.
-- **PRs that enable auto-submitting applications** without human review. career-ops is a decision-support tool, not a spam bot.
+- **PRs that enable hidden or autonomous outbound execution** without an explicit human-controlled boundary.
 - **PRs that add external API dependencies** without prior discussion in an issue.
 - **PRs containing personal data** (real CVs, emails, phone numbers). Use `examples/` with fictional data instead.
 
@@ -59,7 +59,7 @@ PRs without a corresponding issue may be closed if they don't align with the pro
 # Scripts
 npm run doctor                # Setup validation
 node verify-pipeline.mjs     # Health check
-node cv-sync-check.mjs        # Config check
+npm test                      # Test harness
 
 # Dashboard
 cd dashboard && go build -o career-dashboard .
@@ -68,6 +68,6 @@ cd dashboard && go build -o career-dashboard .
 
 ## Need Help?
 
-- [Open an issue](https://github.com/santifer/career-ops/issues)
-- [Read the architecture docs](docs/ARCHITECTURE.md)
-- Built by [santifer](https://santifer.io)
+- [Open an issue](https://github.com/enkronos/enkronos-opportunity-engine/issues)
+- [Read the architecture docs](ARCHITECTURE.md)
+- Review the setup guide in [docs/SETUP.md](docs/SETUP.md)
